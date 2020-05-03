@@ -139,6 +139,10 @@ ynh_script_progression --message="Initializing PostgreSQL database..." --weight=
 ynh_replace_string "betaforms" "$db_user" "$final_path/framaforms.sql"
 ynh_psql_execute_file_as_root "$final_path/framaforms.sql" "$db_name"
 
+# set riddler answer to domain without tld
+answer=$(echo "$domain" | awk '{split($0, a, "."); print(a[length(a)-1])}')
+ynh_psql_execute_as_root --database="$db_name" --sql="update riddler_questions set answer = '$answer' where qid=3"
+
 #=================================================
 # INITIALIZE TMP AND PRIVATE DIRECTORY
 #=================================================
